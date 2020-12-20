@@ -13,11 +13,14 @@
         version="0.1">
 <description trim="y">
 
-Type 'combatspam' to display the help file for this
+Type 'combathelper' to display the help file for this
 
 To Do:
 Add in squelching for melee combat involving parrying weapons
 Rigorous testing
+
+Credits:
+Flek for inspiring the idea.
 
 </description>
 </plugin>
@@ -39,6 +42,7 @@ Rigorous testing
 <!--   Aliases    --> 
 <aliases>
   <alias name="enableScript" script="enableNewCombat" match="^combathelper (on|off)$" enabled="y" ignore_case="y" regexp="y" group="CombatSpamEnabler" sequence="100" />
+  <alias name="helpFile" script="showHelp" match="^combathelper$" enabled="y" ignore_case="y" regexp="y" group="CombatSpamEnabler" sequence="100" />
 </aliases>
 
 <timers>
@@ -132,6 +136,11 @@ end
 function countHit()
     EnableTrigger("CombatRoundStop", true)
     hitCounter = hitCounter+1
+end
+
+function showHelp()
+    ColourNote("silver","","Combat Spam Helper by @Domovoi")
+    ColourNote("silver","","combathelper on/off                   - Enables or disables the combat spam helper")
 end
 
 ]]>
