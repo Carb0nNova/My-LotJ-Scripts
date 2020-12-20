@@ -14,7 +14,10 @@
 <description trim="y">
 
 Type 'combatspam' to display the help file for this
-custom_colour="1" keep_evaluating="y"
+
+To Do:
+Add in squelching for melee combat involving parrying weapons
+Rigorous testing
 
 </description>
 </plugin>
@@ -54,13 +57,13 @@ firsthit = true
 startingHP = getmsdp("HEALTH")
 
 function resetCounters()
-totalDamage = 0
-totalStrikes = 0
-missCounter = 0
-hitCounter = 0
-dodgeCounter = 0
-firsthit = true
-startingHP = getmsdp("HEALTH")
+    totalDamage = 0
+    totalStrikes = 0
+    missCounter = 0
+    hitCounter = 0
+    dodgeCounter = 0
+    firsthit = true
+    startingHP = getmsdp("HEALTH")
 end
 
 function enableNewCombat(name, line, args)
@@ -106,30 +109,29 @@ function countHit()
     end
 end
 
-
 function countStrike(name, line, args)
 
-EnableTrigger("CombatRoundStop", true)
+    EnableTrigger("CombatRoundStop", true)
 
-local damageDealt = tonumber(args[1])
+    local damageDealt = tonumber(args[1])
 
-totalDamage = damageDealt + totalDamage
-totalStrikes = totalStrikes+1
+    totalDamage = damageDealt + totalDamage
+    totalStrikes = totalStrikes+1
 end
 
 function countDodge()  
-EnableTrigger("CombatRoundStop", true)
-dodgeCounter = dodgeCounter+1
+    EnableTrigger("CombatRoundStop", true)
+    dodgeCounter = dodgeCounter+1
 end
 
 function countMiss()
-EnableTrigger("CombatRoundStop", true)
-missCounter = missCounter+1
+    EnableTrigger("CombatRoundStop", true)
+    missCounter = missCounter+1
 end
 
 function countHit()
-EnableTrigger("CombatRoundStop", true)
-hitCounter = hitCounter+1
+    EnableTrigger("CombatRoundStop", true)
+    hitCounter = hitCounter+1
 end
 
 ]]>
