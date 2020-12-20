@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="iso-8859-1" ?> 
+<!DOCTYPE muclient> 
+<!--  Saved on Thursday, February 21, 2013, 8:52 PM   --> 
+<!-- MuClient version 4.73 --> 
+<muclient>
+<plugin name="LotJCombatHelper" 
+        author="@Domovoi" 
+        id="78d86fbecee5642d06498a92" 
+        language="Lua" 
+        purpose="Reduce combat spam into an easer-to-read format" 
+        save_state="y" 
+        requires="4.73" 
+        version="0.1">
+<description trim="y">
+
+Type 'combatspam' to display the help file for this
+custom_colour="1" keep_evaluating="y"
+
+</description>
+</plugin>
+<!--   Get our standard constants   --> 
+<include name="constants.lua" /> 
+<!--   Triggers    --> 
+<triggers>
+    <trigger enabled="n" group="CombatOutput" match="^$" name="CombatRoundStop" regexp="y" sequence="100" script="displayCombatOutput"/>
+    <trigger enabled="n" group="NewCombat" match="^(.*?)(scratches|nicks|grazes|bruises|hits|injures|wounds|mauls|thrashes|decimates|devastates|maims|PULVERIZES|MUTILATES|DISEMBOWELS|EVISCERATES|MASSACRES|OBLITERATES|ANNIHILATES) you(.*?)$" name="HitCounter" keep_evaluating="y" omit_from_output="y" regexp="y" sequence="100" script="countHit"/>
+    <trigger enabled="n" group="NewCombat" match="^You do ([^0](.*)) points of damage\.$" name="DamageGrabber" omit_from_output="y" regexp="y" sequence="100" script="countStrike"/>
+    <trigger enabled="n" group="NewCombat" match="^You miss (.*)$" name="MissCounter" omit_from_output="y" regexp="y" sequence="100" script="countMiss"/>
+    <trigger enabled="n" group="NewCombat" match="^You dodge (.*)$" name="DodgeCounter" omit_from_output="y" regexp="y" sequence="100" script="countDodge"/>
+    
+    <trigger enabled="n" group="NewCombat" match="^(.*) misses you.$" omit_from_output="y" regexp="y" sequence="100"/>
+    <trigger enabled="n" group="NewCombat" match="^You do 0 points of damage\.$" omit_from_output="y" regexp="y" sequence="100"/>
+    <trigger enabled="n" group="NewCombat" match="^Your (.*) (scratches|nicks|grazes|bruises|hits|injures|wounds|mauls|thrashes|decimates|devastates|maims|PULVERIZES|MUTILATES|DISEMBOWELS|EVISCERATES|MASSACRES|OBLITERATES|ANNIHILATES) (.*)$" name="DamageSquelch1" omit_from_output="y" regexp="y" sequence="100"/>
+
+</triggers>
+<!--   Aliases    --> 
+<aliases>
+  <alias name="enableScript" script="enableNewCombat" match="^combathelper (on|off)$" enabled="y" ignore_case="y" regexp="y" group="CombatSpamEnabler" sequence="100" />
+</aliases>
+
+<timers>
+</timers>
+<!--   Script    --> 
+<script>
+<![CDATA[
+dofile(GetPluginInfo(GetPluginID(), 20) .. "LotJMSDPHelper.lua")  
+
+totalDamage = 0
+totalStrikes = 0
+missCounter = 0
+hitCounter = 0
+dodgeCounter = 0
+firsthit = true
+startingHP = getmsdp("HEALTH")
+
+function resetCounters()
+totalDamage = 0
+totalStrikes = 0
+missCounter = 0
+hitCounter = 0
+dodgeCounter = 0
+firsthit = true
+startingHP = getmsdp("HEALTH")
+end
+
+function enableNewCombat(name, line, args)
+    if args[1] == "on" then
+        EnableTriggerGroup("NewCombat",true)
+        ColourNote("lime","","Combat helper on!")
+    else
+        EnableTriggerGroup("NewCombat",false)
+        ColourNote("red","","Combat helper off!")
+    end
+end
+
+function displayCombatOutput()
+    local strDamage = tostring(totalDamage)
+    local strStrikes = tostring(totalStrikes)
+    local strMisses = tostring(missCounter)
+    local strHits = tostring(hitCounter)
+    local strDodges = tostring(dodgeCounter)
+    local finalHP = getmsdp("HEALTH")
+    local HPloss = startingHP - finalHP
+
+    ColourNote("lime","","Dealt "..strDamage.." damage in "..strStrikes.." strikes")
+    ColourNote("yellow","","You missed "..strMisses.." times")
+    Note(" ")
+    if HPloss > 0 then
+        ColourNote("red","","You took "..HPloss.." damage in "..strHits.." strikes")
+    else
+        local HPGain = 0 - HPloss
+        ColourNote("lime","","You healed for "..HPGain.." despite "..strHits.." strikes")
+    end
+    ColourNote("silver","","You dodged "..strDodges.." attacks")
+    Note(" ")
+    EnableTrigger("CombatRoundStop", false)
+    resetCounters()
+end
+
+function countHit()
+    EnableTrigger("CombatRoundStop", true)
+    hitCounter =  hitCounter+1
+    if firsthit ==  true then
+        startingHP = getmsdp("HEALTH")
+        firsthit = false
+    end
+end
+
+
+function countStrike(name, line, args)
+
+EnableTrigger("CombatRoundStop", true)
+
+local damageDealt = tonumber(args[1])
+
+totalDamage = damageDealt + totalDamage
+totalStrikes = totalStrikes+1
+end
+
+function countDodge()  
+EnableTrigger("CombatRoundStop", true)
+dodgeCounter = dodgeCounter+1
+end
+
+function countMiss()
+EnableTrigger("CombatRoundStop", true)
+missCounter = missCounter+1
+end
+
+function countHit()
+EnableTrigger("CombatRoundStop", true)
+hitCounter = hitCounter+1
+end
+
+]]>
+</script>
+
+</muclient>
