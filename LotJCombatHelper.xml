@@ -36,6 +36,7 @@ Flek for inspiring the idea.
     
     <trigger enabled="n" group="NewCombat" match="^(.*) misses you.$" omit_from_output="y" regexp="y" sequence="100"/>
     <trigger enabled="n" group="NewCombat" match="^You do 0 points of damage\.$" omit_from_output="y" regexp="y" sequence="100"/>
+    <trigger enabled="n" group="NewCombat" match="^(.*) dodges your attack\.$" omit_from_output="y" regexp="y" sequence="100"/> 
     <trigger enabled="n" group="NewCombat" match="^Your (.*) (scratches|nicks|grazes|bruises|hits|injures|wounds|mauls|thrashes|decimates|devastates|maims|PULVERIZES|MUTILATES|DISEMBOWELS|EVISCERATES|MASSACRES|OBLITERATES|ANNIHILATES) (.*)$" name="DamageSquelch1" omit_from_output="y" regexp="y" sequence="100"/>
 
 </triggers>
