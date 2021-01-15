@@ -25,7 +25,7 @@ This is updated for Regnawm's showrace change by @Domovoi
 <triggers>
 
   <trigger match="^(\[([\s\d]+)\/([\s\d]+)\]\:)(\s+)([A-Za-z'_]{3,}+)(\s+)?([A-Za-z'_]{3,}+)?(\s+)?([A-Za-z'_]{3,}+)?(\s+)?([A-Za-z'_]{3,}+)?(\s+)?$" script="raceListScanAdd" regexp="y" enabled="n" group="RacelistScan"  omit_from_output="y" omit_from_log="y" sequence="100" />
-  <trigger match="^^(\s+)([A-Za-z'_]{3,}+)(\s+)?([A-Za-z'_]{3,}+)?(\s+)?([A-Za-z'_]{3,}+)?(\s+)?([A-Za-z'_]{3,}+)?(\s+)?$" script="raceListScanAdd" regexp="y" enabled="n" group="RacelistScan"  omit_from_output="y" omit_from_log="y" sequence="100" />
+  <trigger match="^(\s+)([A-Za-z'_]{3,}+)(\s+)?([A-Za-z'_]{3,}+)?(\s+)?([A-Za-z'_]{3,}+)?(\s+)?([A-Za-z'_]{3,}+)?(\s+)?$" script="raceListScanAdd" regexp="y" enabled="n" group="RacelistScan"  omit_from_output="y" omit_from_log="y" sequence="100" />
   <trigger match="^(\[App Only ]\:)(\s+)([A-Za-z'_]{3,}+)(\s+)?([A-Za-z'_]{3,}+)?(\s+)?([A-Za-z'_]{3,}+)?(\s+)?([A-Za-z'_]{3,}+)?(\s+)?$" script="raceListScanAdd" regexp="y" enabled="n" group="RacelistScan"  omit_from_output="y" omit_from_log="y" sequence="100" />
 <!--  <trigger match="^([\s\d]+)\((\d)\)\> (.*) (\d+)\((\d)\)\> (.*)$" script="raceListScanAdd" regexp="y" enabled="n" group="RacelistScan"  omit_from_output="y" omit_from_log="y" sequence="100" />
   <trigger match="^([\s\d]+)\((\d)\)\> (.*)$" script="raceListScanAdd" regexp="y" enabled="n" group="RacelistScan"  omit_from_output="y" omit_from_log="y" sequence="100" />
