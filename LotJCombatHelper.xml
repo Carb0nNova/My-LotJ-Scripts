@@ -90,7 +90,11 @@ function displayCombatOutput()
     local finalHP = getmsdp("HEALTH")
     local HPloss = startingHP - finalHP
 
-    ColourNote("lime","","Dealt "..strDamage.." damage in "..strStrikes.." strikes")
+    if totalDamage > 0 then
+        ColourNote("lime","","Dealt "..strDamage.." damage in "..strStrikes.." strikes")
+    else
+        ColourNote("lime","","You hit your opponent "..strStrikes.." times")
+    end
     ColourNote("yellow","","You missed "..strMisses.." times")
     Note(" ")
     if HPloss > 0 then
