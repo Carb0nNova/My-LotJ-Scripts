@@ -10,7 +10,7 @@
         purpose="Reduce combat spam into an easer-to-read format" 
         save_state="y" 
         requires="4.73" 
-        version="0.1">
+        version="0.11">
 <description trim="y">
 
 Type 'combathelper' to display the help file for this
@@ -21,6 +21,9 @@ Rigorous testing
 
 Credits:
 Flek for inspiring the idea.
+
+Changes:
+0.11 - Adjusted triggers and functions to count strikes by actual strikes instead of when damage is done.
 
 </description>
 </plugin>
