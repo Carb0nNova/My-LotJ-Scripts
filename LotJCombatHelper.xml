@@ -30,14 +30,14 @@ Flek for inspiring the idea.
 <triggers>
     <trigger enabled="n" group="CombatOutput" match="^$" name="CombatRoundStop" regexp="y" sequence="100" script="displayCombatOutput"/>
     <trigger enabled="n" group="NewCombat" match="^(.*?)(scratches|nicks|grazes|bruises|hits|injures|wounds|mauls|thrashes|decimates|devastates|maims|PULVERIZES|MUTILATES|DISEMBOWELS|EVISCERATES|MASSACRES|OBLITERATES|ANNIHILATES) you(.*?)$" name="HitCounter" keep_evaluating="y" omit_from_output="y" regexp="y" sequence="100" script="countHit"/>
-    <trigger enabled="n" group="NewCombat" match="^You do ([^0](.*)) points of damage\.$" name="DamageGrabber" omit_from_output="y" regexp="y" sequence="100" script="countStrike"/>
+    <trigger enabled="n" group="NewCombat" match="^You do ([^0](.*)) points of damage\.$" name="DamageGrabber" omit_from_output="y" regexp="y" sequence="100" script="countDamage"/>
     <trigger enabled="n" group="NewCombat" match="^You miss (.*)$" name="MissCounter" omit_from_output="y" regexp="y" sequence="100" script="countMiss"/>
     <trigger enabled="n" group="NewCombat" match="^You dodge (.*)$" name="DodgeCounter" omit_from_output="y" regexp="y" sequence="100" script="countDodge"/>
     
     <trigger enabled="n" group="NewCombat" match="^(.*) misses you.$" omit_from_output="y" regexp="y" sequence="100"/>
     <trigger enabled="n" group="NewCombat" match="^You do 0 points of damage\.$" omit_from_output="y" regexp="y" sequence="100"/>
     <trigger enabled="n" group="NewCombat" match="^(.*) dodges your attack\.$" omit_from_output="y" regexp="y" sequence="100"/> 
-    <trigger enabled="n" group="NewCombat" match="^Your (.*) (scratches|nicks|grazes|bruises|hits|injures|wounds|mauls|thrashes|decimates|devastates|maims|PULVERIZES|MUTILATES|DISEMBOWELS|EVISCERATES|MASSACRES|OBLITERATES|ANNIHILATES) (.*)$" name="DamageSquelch1" omit_from_output="y" regexp="y" sequence="100"/>
+    <trigger enabled="n" group="NewCombat" match="^Your (.*) (scratches|nicks|grazes|bruises|hits|injures|wounds|mauls|thrashes|decimates|devastates|maims|PULVERIZES|MUTILATES|DISEMBOWELS|EVISCERATES|MASSACRES|OBLITERATES|ANNIHILATES) (.*)$" name="countStrikes" omit_from_output="y" regexp="y" sequence="100"/>
 
 </triggers>
 <!--   Aliases    --> 
@@ -118,13 +118,17 @@ function countHit()
     end
 end
 
-function countStrike(name, line, args)
+function countDamage(name, line, args)
 
     EnableTrigger("CombatRoundStop", true)
 
     local damageDealt = tonumber(args[1])
 
     totalDamage = damageDealt + totalDamage
+end
+
+function countStrikes()
+    EnableTrigger("CombatRoundStop", true)
     totalStrikes = totalStrikes+1
 end
 
