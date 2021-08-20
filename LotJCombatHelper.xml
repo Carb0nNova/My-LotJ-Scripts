@@ -31,17 +31,86 @@ Changes:
 <include name="constants.lua" /> 
 <!--   Triggers    --> 
 <triggers>
+    <!-- Basic combat triggers -->
     <trigger enabled="n" group="CombatOutput" match="^$" name="CombatRoundStop" regexp="y" sequence="100" script="displayCombatOutput"/>
     <trigger enabled="n" group="NewCombat" match="^(.*?)(scratches|nicks|grazes|bruises|hits|injures|wounds|mauls|thrashes|decimates|devastates|maims|PULVERIZES|MUTILATES|DISEMBOWELS|EVISCERATES|MASSACRES|OBLITERATES|ANNIHILATES) you(.*?)$" name="HitCounter" keep_evaluating="y" omit_from_output="y" regexp="y" sequence="100" script="countHit"/>
-    <trigger enabled="n" group="NewCombat" match="^You do ([^0](.*)) points of damage\.$" name="DamageGrabber" omit_from_output="y" regexp="y" sequence="100" script="countDamage"/>
     <trigger enabled="n" group="NewCombat" match="^You miss (.*)$" name="MissCounter" omit_from_output="y" regexp="y" sequence="100" script="countMiss"/>
-    <trigger enabled="n" group="NewCombat" match="^You dodge (.*)$" name="DodgeCounter" omit_from_output="y" regexp="y" sequence="100" script="countDodge"/>
-    
-    <trigger enabled="n" group="NewCombat" match="^(.*) misses you.$" omit_from_output="y" regexp="y" sequence="100"/>
+    <trigger enabled="n" group="NewCombat" match="^You dodge (.*)$" name="DodgeCounter" omit_from_output="y" regexp="y" sequence="100" script="countDodge"/>   
+    <trigger enabled="n" group="NewCombat" match="^(.*) misses you.$" omit_from_output="y" regexp="y" sequence="100" script="countEnemyMiss"/>
     <trigger enabled="n" group="NewCombat" match="^You do 0 points of damage\.$" omit_from_output="y" regexp="y" sequence="100"/>
-    <trigger enabled="n" group="NewCombat" match="^(.*) dodges your attack\.$" omit_from_output="y" regexp="y" sequence="100"/> 
-    <trigger enabled="n" group="NewCombat" match="^Your (.*) (scratches|nicks|grazes|bruises|hits|injures|wounds|mauls|thrashes|decimates|devastates|maims|PULVERIZES|MUTILATES|DISEMBOWELS|EVISCERATES|MASSACRES|OBLITERATES|ANNIHILATES) (.*)$" name="countStrikes" omit_from_output="y" regexp="y" sequence="100"/>
+    <trigger enabled="n" group="NewCombat" match="^Your (.*) (scratches|nicks|grazes|bruises|hits|injures|wounds|mauls|thrashes|decimates|devastates|maims|PULVERIZES|MUTILATES|DISEMBOWELS|EVISCERATES|MASSACRES|OBLITERATES|ANNIHILATES) (.*) \((\d+)\)$" name="DamageGrabber" omit_from_output="y" regexp="y" sequence="100" script="countStrike"/>
+    <trigger enabled="n" group="NewCombat" match="^(.*) dodges your attack" name="EnemyDodgeCounter" omit_from_output="y" regexp="y" sequence="100" script="countEnemyDodge"/>
+    <!-- Below triggers are when YOU block an attack with your blade. All (.*) below corresponds to the enemy's name. -->
+    <trigger enabled="n" group="BladeCombat" match="Your weapon collides with (.*)'s with a spark\.$" name="BladeBlock1" omit_from_output="y" regexp="y" sequence="100" script="countSelfBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="^Your weapon intercepts (.*)\'s\, knocking it wide\.$" name="BladeBlock2" omit_from_output="y" regexp="y" sequence="100" script="countSelfBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="^You bring your weapon up\, blocking (.*)'s\.$" name="BladeBlock3" omit_from_output="y" regexp="y" sequence="100" script="countSelfBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="^You feint to your left\, bringing your weapon across to intercept (.*)\'s\.$" name="BladeBlock4" omit_from_output="y" regexp="y" sequence="100" script="countSelfBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="^You step back\, your weapon striking (.*)'s\.$" name="BladeBlock5" omit_from_output="y" regexp="y" sequence="100" script="countSelfBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="^You lunge forward\, striking (.*)\'s weapon with your own\.$" name="BladeBlock6" omit_from_output="y" regexp="y" sequence="100" script="countSelfBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="^You feint to your right\, bringing your weapon down to stop (.*)\'s\.$" name="BladeBlock7" omit_from_output="y" regexp="y" sequence="100" script="countSelfBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="^You bring your weapon up\, blocking (.*)'s with a resounding TWANG\.$" name="BladeBlock8" omit_from_output="y" regexp="y" sequence="100" script="countSelfBlock"/>
+    <!-- First (.*) is enemy name. Second is gender -->
+    <trigger enabled="n" group="BladeCombat" match="^You thrust your weapon towards (.*)\'s\, stopping (.*) attack\.$" name="BladeBlock9" omit_from_output="y" regexp="y" sequence="100" script="countSelfBlock"/>
+    
+    <!-- Moving into ENEMY blocking attack. Same (.*) as above -->
+    <trigger enabled="n" group="BladeCombat" match="(.*)\'s weapon collides with yours with a spark\.$" name="EnemyBlock1" omit_from_output="y" regexp="y" sequence="100" script="countEnemyBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="(.*)\'s weapon intercepts yours\, knocking it wide\.$" name="EnemyBlock2" omit_from_output="y" regexp="y" sequence="100" script="countEnemyBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="(.*) brings (.*) weapon up\, blocking yours\.$" name="EnemyBlock3" omit_from_output="y" regexp="y" sequence="100" script="countEnemyBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="(.*) feints to (.*) left\, bringing (.*) weapon across to intercept yours\.$" name="EnemyBlock4" omit_from_output="y" regexp="y" sequence="100" script="countEnemyBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="(.*) brings (.*) weapon up\, blocking yours with a resounding TWANG\.$" name="EnemyBlock5" omit_from_output="y" regexp="y" sequence="100" script="countEnemyBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="(.*) steps back\, (.*) weapon striking yours\.$" name="EnemyBlock6" omit_from_output="y" regexp="y" sequence="100" script="countEnemyBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="(.*) lunges forward\, (.*) weapon stopping yours\.$" name="EnemyBlock7" omit_from_output="y" regexp="y" sequence="100" script="countEnemyBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="(.*) feints to (.*) right\, bringing (.*) weapon down to stop yours\.$" name="EnemyBlock8" omit_from_output="y" regexp="y" sequence="100" script="countEnemyBlock"/>
+    <trigger enabled="n" group="BladeCombat" match="(.*) thrusts (.*) weapon towards yours\, stopping your attack\.$" name="EnemyBlock9" omit_from_output="y" regexp="y" sequence="100" script="countEnemyBlock"/>
+    <!-- Have to figure out how to deal with this one before I can trigger off of it.
+    You attempt to counter\.\.\.(some message about hitting or missing)
+    -->
+    
+    <!-- Now counting rebounds.-->
+    <!-- Your intercept (Enemy)'s blaster bolt with your lightsaber, redirecting it back at (him/her)!-->
+    <trigger enabled="n" group="Rebounds" match="^You intercept (.*)'s blaster bolt with your lightsaber\, redirecting it back at (.*)\!$" name="ReboundRedirect1" omit_from_output="y" regexp="y" sequence="100" script="countReboundRedirectBack"/>
+    <!-- You redirect (someone)'s blaster bolt, and it flies into (Target)! -->
+    <trigger enabled="n" group="Rebounds" match="^You redirect (.*)'s blaster bolt\, and it flies into (.*)\!$" name="ReboundRedirect2" omit_from_output="y" regexp="y" sequence="100" script="countSelfRebound"/>
+    
+    <!-- (Enemy) redirects your blaster bolt, and it flies into (someone) !-->
+    <trigger enabled="n" group="Rebounds" match="^(.*) redirects your blaster bolt\, and it flies into (.*)\!$" name="ReboundRedirect3" omit_from_output="y" regexp="y" sequence="100" script="countEnemyRebound"/>
+    
+    <!-- Rebounds into the ground. -->
+    <!-- You redirect enemy's blaster bolt... -->
+    <trigger enabled="n" group="Rebounds" match="^You redirect (.*)\'s blaster bolt\, and it rebounds into the ground\.$" name="ReboundRedirect4" omit_from_output="y" regexp="y" sequence="100" script="countSelfGroundRebound"/>
+    <!-- Enemy redirects your blaster bolt... -->
+    <trigger enabled="n" group="Rebounds" match="^(.*) redirects your blaster bolt\, and it rebounds into the ground\.$" name="ReboundRedirect5" omit_from_output="y" regexp="y" sequence="100" script="countEnemyGroundRebound"/>
 
+    <!-- Rebounds into you -->
+    <!-- (Enemy) intercepts your blaster bolt with (gender) lightsaner, redirecting it back at you!-->
+    <trigger enabled="n" group="Rebounds" match="^(.*) intercepts your blaster bolt with (.*) lightsaber\, redirecting it back at you\!$" name="ReboundRedirect6" omit_from_output="y" regexp="y" sequence="100" script="countReboundedIntoYou"/>
+    <!-- ^(Person A) redirects (Person B)\'s blaster bolt\, and it flies into you\!$ -->
+    <trigger enabled="n" group="Rebounds" match="^(.*) redirects (.*)\'s blaster bolt\, and it flies into you\!$" name="ReboundRedirect7" omit_from_output="y" regexp="y" sequence="100" script="countOthersReboundedIntoYou"/>
+    
+    <!-- Now for the combat of others -->
+    <!-- First (.*) is primary target, second is their target -->
+    <trigger enabled="n" group="OthersBladeCombat" match="^(.*)\'s weapon intercepts (.*)\'s\, knocking it wide\.$" name="OtherBlock1" omit_from_output="y" regexp="y" sequence="100" script="countOtherBlock"/>
+    <trigger enabled="n" group="OthersBladeCombat" match="^(.*)\'s weapon collides with (.*)\'s with a spark\.$" name="OtherBlock2" omit_from_output="y" regexp="y" sequence="100" script="countOtherBlock"/>
+    <!-- First (.*) is primary target, second is gender, third is their target -->
+    <trigger enabled="n" group="OthersBladeCombat" match="^(.*) brings (.*) weapon up\, blocking (.*)\'s\.$" name="OtherBlock3" omit_from_output="y" regexp="y" sequence="100" script="countOtherBlockV2"/>
+    <trigger enabled="n" group="OthersBladeCombat" match="^(.*) brings (.*) weapon up\, blocking (.*)\'s with a resounding TWANG\.$" name="OtherBlock5" omit_from_output="y" regexp="y" sequence="100" script="countOtherBlockV2"/>
+    <trigger enabled="n" group="OthersBladeCombat" match="^(.*) steps back\, (.*) weapon striking (.*)\'s\.$" name="OtherBlock6" omit_from_output="y" regexp="y" sequence="100" script="countOtherBlockV2"/>
+    <trigger enabled="n" group="OthersBladeCombat" match="^(.*) lunges forward\, (.*) weapon stopping (.*)\'s\.$" name="OtherBlock7" omit_from_output="y" regexp="y" sequence="100" script="countOtherBlockV2"/>
+    <!-- First (.*) is primary target, second is their gender, third is again their gender, fourth is their target -->
+    <trigger enabled="n" group="OthersBladeCombat" match="^(.*) feints to (.*) left\, bringing (.*) weapon across to intercept (.*)'s\.$" name="OtherBlock4" omit_from_output="y" regexp="y" sequence="100" script="countOtherBlockV3"/>
+    <trigger enabled="n" group="OthersBladeCombat" match="^(.*) feints to (.*) right\, bringing (.*) weapon down to stop (.*)\'s\.$" name="OtherBlock8" omit_from_output="y" regexp="y" sequence="100" script="countOtherBlockV3"/>
+    <!-- First (.*) is primary target, second is gender, third is their target, fourth is their target's gender -->
+    <trigger enabled="n" group="OthersBladeCombat" match="^(.*) thrusts (.*) weapon towards (.*)\'s\, stopping (.*) attack\.$" name="OtherBlock9" omit_from_output="y" regexp="y" sequence="100" script="countOtherBlockV4"/>
+
+    <!-- Rebounds of others -->
+    <!-- (Person A) redirects (Person B)'s blaster bolt with (Person A's gender) lightsaber, redirecting it back at (Person C) -->
+    <trigger enabled="n" group="OthersRebounds" match="^(.*) intercepts (.*)'s blaster bolt with (.*) lightsaber\, redirecting it back at (.*)\!$" name="OtherRebound1" omit_from_output="y" regexp="y" sequence="100" script="countOtherReboundHit"/>
+    <!-- Buggy redirect line: Person A redirects Person A's blaster bolt, and it flies into Person B! -->
+    <trigger enabled="n" group="OthersRebounds" match="^(.*) redirects (.*)'s blaster bolt\, and it flies into (.*)\!$" name="OtherRebound2" omit_from_output="y" regexp="y" sequence="100" script="countOtherReboundHit"/>
+
+    <!-- Others' ground rebounds -->
+    <trigger enabled="n" group="OthersRebounds" match="^(.*) quickly parries a deflected blaster bolt\, and it rebounds into the ground\.$" name="OtherRebound3" omit_from_output="y" regexp="y" sequence="100" script="countOtherReboundGround"/>
+    <trigger enabled="n" group="OthersRebounds" match="^(.*) redirects (.*)'s blaster bolt\, and it rebounds into the ground\.$" name="OtherRebound4" omit_from_output="y" regexp="y" sequence="100" script="countOtherReboundGround"/>
 </triggers>
 <!--   Aliases    --> 
 <aliases>
@@ -55,12 +124,32 @@ Changes:
 <script>
 <![CDATA[
 dofile(GetPluginInfo(GetPluginID(), 20) .. "LotJMSDPHelper.lua")  
+<script>
+
+--experimental Table:
+combatResults = {} 
+-- self.damageDealt, self.strikes, self.misses, self.dodges, self.rebounds.ground, self.rebounds.hits, self.rebounds.victims, enemy#.name, enemy#.hits, enemy#.dodges, enemy#.misses
 
 totalDamage = 0
 totalStrikes = 0
 missCounter = 0
 hitCounter = 0
 dodgeCounter = 0
+selfBlock = 0
+enemyBlock = 0
+reboundBack = 0
+selfRebound = 0
+enemyRebound = 0
+selfGroundRebound = 0
+enemyGroundRebound = 0
+reboundedIntoYou = 0
+othersReboundedIntoYou = 0
+otherBlockA = 0
+otherBlockB = 0
+victimCounter = {} -- name, gender
+redirectCounter = {} -- name, total redirect hits
+enemies = {}
+fightingOthers = {} -- name, gender
 firsthit = true
 startingHP = getmsdp("HEALTH")
 
@@ -70,6 +159,21 @@ function resetCounters()
     missCounter = 0
     hitCounter = 0
     dodgeCounter = 0
+    selfBlock = 0
+    enemyBlock = 0
+    reboundBack = 0
+    selfRebound = 0
+    enemyRebound = 0
+    selfGroundRebound = 0
+    enemyGroundRebound = 0
+    reboundedIntoYou = 0
+    othersReboundedIntoYou = 0
+    otherBlockA = 0
+    otherBlockB = 0
+    victimCounter = {} -- name, gender
+    redirectCounter = {} -- name, total redirect hits
+    enemies = {}
+    fightingOthers = {} -- name, gender
     firsthit = true
     startingHP = getmsdp("HEALTH")
 end
@@ -84,54 +188,10 @@ function enableNewCombat(name, line, args)
     end
 end
 
-function displayCombatOutput()
-    local strDamage = tostring(totalDamage)
-    local strStrikes = tostring(totalStrikes)
-    local strMisses = tostring(missCounter)
-    local strHits = tostring(hitCounter)
-    local strDodges = tostring(dodgeCounter)
-    local finalHP = getmsdp("HEALTH")
-    local HPloss = startingHP - finalHP
-
-    if totalDamage > 0 then
-        ColourNote("lime","","Dealt "..strDamage.." damage in "..strStrikes.." strikes")
-    else
-        ColourNote("lime","","You hit your opponent "..strStrikes.." times")
-    end
-    ColourNote("yellow","","You missed "..strMisses.." times")
-    Note(" ")
-    if HPloss > 0 then
-        ColourNote("red","","You took "..HPloss.." damage in "..strHits.." strikes")
-    else
-        local HPGain = 0 - HPloss
-        ColourNote("lime","","You healed for "..HPGain.." despite "..strHits.." strikes")
-    end
-    ColourNote("silver","","You dodged "..strDodges.." attacks")
-    Note(" ")
-    EnableTrigger("CombatRoundStop", false)
-    resetCounters()
-end
-
-function countHit()
+function countStrike(name, line, args)
     EnableTrigger("CombatRoundStop", true)
-    hitCounter =  hitCounter+1
-    if firsthit ==  true then
-        startingHP = getmsdp("HEALTH")
-        firsthit = false
-    end
-end
-
-function countDamage(name, line, args)
-
-    EnableTrigger("CombatRoundStop", true)
-
-    local damageDealt = tonumber(args[1])
-
+    local damageDealt = tonumber(args[4])
     totalDamage = damageDealt + totalDamage
-end
-
-function countStrikes()
-    EnableTrigger("CombatRoundStop", true)
     totalStrikes = totalStrikes+1
 end
 
@@ -147,8 +207,240 @@ end
 
 function countHit()
     EnableTrigger("CombatRoundStop", true)
-    hitCounter = hitCounter+1
+    hitCounter =  hitCounter+1
+    if firsthit ==  true then
+        startingHP = getmsdp("HEALTH")
+        firsthit = false
+    end
 end
+
+function countEnemyDodge()
+end
+
+function countEnemyMiss()
+
+function countSelfBlock()
+    EnableTrigger("CombatRoundStop", true)
+    selfBlock = selfBlock+1
+end
+
+function countEnemyBlock()
+    EnableTrigger("CombatRoundStop", true)
+    enemyBlock = enemyBlock+1
+end
+
+function countReboundRedirectBack(name, line, args)
+    local redirectTarget = tostring(args[1])
+    EnableTrigger("CombatRoundStop", true)
+    for i,v in ipairs(redirectCounter) do
+        if tostring("v") == tostring("redirectTarget") then -- victim is already in the list
+            redirecteePresent = "true"
+            rIndex = i
+        end
+    end
+    if redirecteePresent == "true" then
+        local countRebounds = redirectCounter[rIndex].totalRebounds or 0
+        redirectCounter[rIndex].totalRebounds = countRebounds + 1
+    else
+        newIndex = #redirectees+1
+        redirectCounter[newIndex].target = redirectTarget
+        redirectCounter[newIndex].totalRebounds = 1
+    end
+end
+
+function countSelfRebound(name, line, args)
+    args[1] = enemy
+    args[2] = victim
+end
+
+function countEnemyRebound(name, line, args)
+    args[1] = enemy
+    args[2] = victim
+end
+
+function countSelfGroundRebound(name, line, args)
+    args[1] = enemy
+end
+
+function countEnemyGroundRebound(name, line, args)
+    args[1] = enemy
+end
+
+function countReboundedIntoYou(name, line, args)
+    args[1] = enemy
+    args[2] = gender
+end
+
+function countOthersReboundedIntoYou(name, line, args)
+    args[1] = personA
+    args[2] = personB
+end
+
+function countOtherBlock(name, line, args)
+    args[1] = personA
+    args[2] = personB
+end
+
+function countOtherBlockV2
+    args[1] = personA
+    args[2] = personAGender
+    args[3] = personB
+end
+
+function countOtherBlockV3
+    args[1] = personA
+    args[2] = personAGender
+    args[3] = personAGender
+    args[4] = personB
+end
+
+function countOtherBlockV4
+    args[1] = personA
+    args[2] = personAGender
+    args[3] = personB
+    args[4] = personBGender
+end
+
+function countOtherReboundHit(name, line, args)
+    args[1] = personA
+    args[2] = personB
+    args[3] = personAGender
+    args[4] = personC
+end
+
+function countOtherReboundGround(name, line, args)
+    args[1] = personA
+    args[2] = personB
+end
+
+function displayCombatOutput()
+    local strDamage = tostring(totalDamage)
+    local strStrikes = tostring(totalStrikes)
+    local strMisses = tostring(missCounter)
+    local strHits = tostring(hitCounter)
+    local strDodges = tostring(dodgeCounter)
+    local enemyStrDodges = tostring(enemyDodgeCounter)
+    local strCounter = tostring(selfBlock)
+    local enemyStrCounter = tostring(enemyBlock)
+    local strGroundRebound = tostring(selfGroundRebound)
+    local strHitRebound = tostring(selfRebound)
+    local strEnemyRebound = tostring(enemyRebound)
+    local strEnemyGroundRebound = tostring(enemyGroundRebound)
+    local strReboundedIntoYou = tostring(reboundedIntoYou)
+    local strOthersReboundedIntoYou = tostring(othersReboundedIntoYou)
+    local finalHP = getmsdp("HEALTH")
+    local opponent = tostring(getmsdp("OPPONENT")
+    local HPloss = startingHP - finalHP
+    
+    --Calculating a victory phrase
+    if opponent == "Not Found." then
+      local victoryPhrase1 = "You have defeated your opponent"
+      if totalDamage > 0 then
+        victoryPhrase1 = victoryPhrase1.." by dealing a finishing blow of "..totalDamage
+      end
+      if totalStrikes > 0 then
+        if totalDamage == 0 then
+          victoryPhrase1 = victoryPhrase1.." by dealing a finishing blow of "..strStrikes
+        else
+          victoryPhrase1 = victoryPhrase1.." in "..strStrikes
+        end
+      end
+      if missCounter > 0 then
+        victoryPhrase1 = victoryPhrase1.." while missing "..strMisses.." times"
+      end
+      if dodgeCounter > 0 then
+        victoryPhrase1 = victoryPhrase1..", all while dodging "..strDodges.." attacks"
+      end
+      
+      local victoryPhrase2 = "Your opponent fought valiantly"
+      if hitCounter > 0 then
+        victoryPhrase2 = victoryPhrase2..", landing "..strHits.." hits for "..HPloss.." HP"
+      end
+      if enemyDodgeCounter > 0 then
+        victoryPhrase2 = victoryPhrase2..". They dodged "..enemyStrDodges.." of your attacks"
+      end
+      if enemyBlockCounter > 0 then
+        if enemyDodgeCounter > 0 then
+          victoryPhrase2 = victoryPhrase2.." and blocked "..enemyStrCounter.." more"
+        else
+          victoryPhrase2 = victoryPhrase2..". They blocked "..enemyStrCounter.." attacks"
+        end
+      end
+      victoryPhrase2 = victoryPhrase2..". But they could not get the better of you!"
+      return
+    end
+    
+    --Handling blade blocks
+    if (blockCounter > 0) or (enemyBlockCounter > 0) then
+      if blockCounter > 0 then
+        ColourNote("limegreen", "", "You bring your weapon to bear as you continue to duel "..opponent..", blocking "..strCounter.." strikes!")
+      end
+      if enemyBlockCounter > 0 then
+        ColourNote("tomato", "", ""..capOpponent.." fights just as fiercely, blocking "..enemyStrCounter.." of your strikes!")
+      end
+      Note(" ")
+    end
+    
+    --Handling rebounds
+    if (groundReboundCounter > 0) or (hitReboundCounter > 0) then
+        if (hitReboundCounter > 0) and (groundReboundCounter > 0 ) then
+          ColourNote("limegreen", "", "Your quick reflexes allow you to deflect "..strGroundRebound.." shots into the ground, and "..strHitRebound.." shots into your enemy!")
+        elseif (hitReboundCounter == 0) and (groundReboundCounter > 0) then
+          ColourNote("limegreen", "", "Your quick reflexes allow you to deflect "..strGroundRebound.." shots into the ground!")
+        elseif (hitReboundCounter > 0) and (groundReboundCounter == 0) then
+          ColourNote("limegreen", "", "Your quick reflexes allow you to deflect all "..strHitRebound.." blaster bolts back into your enemy!")
+        end
+      Note(" ")
+    end
+    
+    if (enemyReboundCounter > 0) or (enemyGroundRebound > 0) then
+      if (enemyReboundCounter > 0) and (enemyGroundRebound > 0) then
+        ColourNote("ansiLightRed", "", "Your opponent reflects "..strEnemyRebound.." of blaster shots back toward you, and"..strEnemyGroundRebound.." into the ground!")
+      elseif (enemyReboundCounter == 0) and (enemyGroundRebound > 0) then
+        ColourNote("yellow", "", "Your opponent rebounds "..strEnemyGroundRebound.." blaster shots into the ground!")
+      elseif (enemyReboundCounter > 0) and (enemyGroundRebound == 0) then
+        ColourNote("ansiLightRed", "", "Your opponent reflects "..strEnemyRebound.." blaster shots back at you!")
+      end
+      Note(" ")
+    end
+    
+    --Main output
+    if (totalDamage > 0) and (totalStrikes > 0) then
+      ColourNote("lime", "", "Dealt "..opponent.." "..strDamage.." damage in "..strStrikes.." strikes")
+    elseif (totalDamage == 0) and (totalStrikes > 0) then
+      ColourNote("lime", "", "Dealt an unknown amount of damage to "..opponent.." in "..strStrikes.." strikes")
+    end
+    if ((totalDamage > 0) or (totalStrikes > 0)) and (missCounter > 0) then
+      ColourNote("yellow", "", "You missed "..strMisses.." times")
+    end
+    if (totalDamage == 0) and (totalStrikes == 0) then
+      ColourNote("yellow", "", "You tried to connect, but you missed "..strMisses.." times")
+    end
+    if enemyDodgeCounter > 0 then
+      ColourNote("yellow", "", ""..opponent.." dodged "..enemyStrDodges.." of your strikes!")
+    end
+    
+    Note(" ")
+    
+    --Announcing HP loss, if any
+    if HPloss > 0 then
+        ColourNote("red", "", "You took "..HPloss.." damage in "..strHits.." strikes")
+    elseif HPloss < 0 then
+        local HPGain = 0 - HPloss
+        if strHits > 0 then
+          ColourNote("lime", "", "You healed for "..HPGain.." despite "..strHits.." strikes")
+        else
+          ColourNote("lime", "", "You healed for "..HPGain.." in spite of your opponent's efforts!")
+    end
+    if dodgeCounter > 0 then
+      ColourNote("silver", "", "You dodged "..strDodges.." attacks")
+    end
+      
+    
+    Note(" ")
+    EnableTrigger("CombatRoundStop", false)
+    resetCounters()
+  end
 
 function showHelp()
     ColourNote("silver","","Combat Spam Helper by @Domovoi")
